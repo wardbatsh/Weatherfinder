@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Weather Checker</h1>
+        <input type="text" id="city" placeholder="Enter city name">
+        <button onclick="getWeather()">Get Weather</button>
+        <div id="weatherResult"></div>
+    </div>
+
+    <script>
+        function getWeather() {
+            const city = document.getElementById('city').value;
+            
+            // Send GET request to Flask API
+            fetch(`/get_weather?city=${city}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('weatherResult').innerHTML = data.error;
+                    } else {
+                        const temp = data.temp;
+                        const desc = data.desc;
+                        document.getElementById('weatherResult').innerHTML = `
+                            Temperature: ${temp}<br>
+                            Description: ${desc}
+                        `;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('weatherResult').innerHTML = 'Error fetching weather data';
+                });
+        }
+    </script>
+</body>
+</html>
+
